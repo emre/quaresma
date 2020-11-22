@@ -3,10 +3,6 @@ import os.path
 
 from .client import CustomClient
 from .embeds import get_help, subscription_list_embed
-from .db import Database
-
-import asyncio
-import httpx
 
 
 def main():
@@ -22,7 +18,8 @@ def main():
     async def subscribe(ctx, player):
         # check if the username is valid
         if not await bot.username_is_valid(player):
-            await bot.say_error(f"Error: {player} is not a valid username.", ctx)
+            await bot.say_error(f"Error: {player} is not a valid username.",
+                                ctx)
             return
 
         # get the discord handle with ID. (Example: foo#N)
@@ -47,15 +44,16 @@ def main():
         # Finally, subscribe
         bot.db.subscribe(player, discord_account, ctx.message.author.id)
         await bot.say_success(f"Subscription is successful. "
-                               f"(From {ctx.message.author.mention}"
-                               f" to {player}.)", ctx)
+                              f"(From {ctx.message.author.mention}"
+                              f" to {player}.)", ctx)
 
     @bot.command(pass_context=True)
     async def unsubscribe(ctx, player):
-        # # check if the username is valid
-        # if not bot.steem_username_is_valid(player):
-        #     await bot.say_error(f"Error: {player} is not a valid username.")
-        #     return
+        # check if the username is valid
+        if not bot.steem_username_is_valid(player):
+            await bot.say_error(
+                f"Error: {player} is not a valid username.", ctx)
+            return
 
         # get the discord handle with ID. (Example: foo#N)
         discord_account = str(ctx.message.author)
@@ -70,8 +68,8 @@ def main():
         # Finally, unsubscribe
         bot.db.unsubscribe(player, discord_account)
         await bot.say_success(f"Subscription is removed. "
-                               f"(From {ctx.message.author.mention}"
-                               f" to {player}.)", ctx)
+                              f"(From {ctx.message.author.mention}"
+                              f" to {player}.)", ctx)
 
     @bot.command(pass_context=True)
     async def subscriptions(ctx):
@@ -82,7 +80,6 @@ def main():
     @bot.command(pass_context=True)
     async def help(ctx):
         await ctx.send("Available commands", embed=get_help())
-
 
     # async def listen_battles():
     #     """This task listens the battles and and notifies the subscribed
